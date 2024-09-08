@@ -89,7 +89,6 @@ Create a `grab.json` file in your project root to customize Context Grab's behav
 
 ```json
 {
-  "type": "typescript",
   "aliasConfig": {
     "@utils": "./src/utils",
     "@components": "./src/components"
@@ -111,7 +110,6 @@ Create a `grab.json` file in your project root to customize Context Grab's behav
 
 ### Configuration Options
 
-- `type`: Language type (`"javascript"` or `"typescript"`)
 - `aliasConfig`: Path aliases for import resolution
 - `includeImports`: Whether to include import statements
 - `depth`: Maximum depth for context extraction (number of files to traverse)

@@ -6,11 +6,11 @@ export const extensionOptions = {
 };
 
 export const defaultOptions: ParserOptions = {
-  type: 'typescript',
   isDebug: false,
   includeImports: true,
   order: ['imports', 'types', 'classes', 'functions'],
   prettier: {},
+  aliasConfig: {},
   depth: 3,
   file: true
 };

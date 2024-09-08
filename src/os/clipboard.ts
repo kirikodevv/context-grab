@@ -1,15 +1,16 @@
-import {execSync} from "child_process";
-
 export const copyToClipboard = (text: string) => {
-  const { execSync } = require('child_process');
+  try {
+    const {execSync} = require('child_process');
+    const escapedText = text.replace(/'/g, "'\\''");
 
-  const platform = process.platform;
-
-  if (platform === 'darwin') {
-    execSync(`echo "${text}" | pbcopy`);
-  } else if (platform === 'win32') {
-    execSync(`echo ${text} | clip`);
-  } else {
-    execSync(`echo "${text}" | xclip -selection clipboard`);
+    if (process.platform === 'darwin') {
+      execSync(`echo '${escapedText}' | pbcopy`);
+    } else if (process.platform === 'win32') {
+      execSync(`echo ${escapedText} | clip`);
+    } else {
+      execSync(`echo '${escapedText}' | xclip -selection clipboard`);
+    }
+  } catch (e) {
+    console.log('Clipboard Failed', e);
   }
 };

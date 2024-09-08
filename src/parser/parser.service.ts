@@ -1,16 +1,16 @@
-import * as parser from "@babel/parser";
+import * as parser from '@babel/parser';
 
-import babel from "@babel/core";
-import generate from "@babel/generator";
+import babel from '@babel/core';
+import generate from '@babel/generator';
 
-import fs from "fs";
+import fs from 'fs';
 
-import traverse, { Node, NodePath } from "@babel/traverse";
-import { OutputResults, ParserOptions } from "../types";
-import { Project } from "../services/project.service";
-import { defaultOptions } from "../config";
-import { aliasName } from "../utils";
-import { EntityData } from "./entity.class";
+import traverse, { Node, NodePath } from '@babel/traverse';
+import { OutputResults, ParserOptions } from '../types';
+import { Project } from '../services/project.service';
+import { defaultOptions } from '../config';
+import { aliasName } from '../utils';
+import { EntityData } from './entity.class';
 
 export default class Parser extends Project {
   methods: OutputResults = {};
@@ -30,10 +30,6 @@ export default class Parser extends Project {
       alias: aliasName(functionName, path),
       depth: 1,
     });
-
-    if (this.options.type === "typescript") {
-      this.parserPlugins.push("typescript");
-    }
   }
 
   getContext() {
@@ -42,15 +38,14 @@ export default class Parser extends Project {
 
       try {
         if (!this.methods[func.alias]) {
-          this.debug("Executing", func.name);
+          this.debug('Executing', func.name);
 
           // Dont dig on classes
-          if (["classes" || "imports"].includes(func.type)) {
+          if (['classes' || 'imports'].includes(func.type)) {
             continue;
           }
 
           const references = this.getFunction(func);
-          console.log('Executing ', func.name, 'at', func.depth)
 
           // Insert new references
           if (references?.length) {
@@ -58,15 +53,15 @@ export default class Parser extends Project {
               ...references
                 .map((ref) => ({
                   ...ref,
-                  depth: ref.path === func.path ? func.depth : func.depth + 1
+                  depth: ref.path === func.path ? func.depth : func.depth + 1,
                 }))
-                .filter((o) => !this.methods[o.alias] && o.depth <= this.options.depth)
+                .filter((o) => !this.methods[o.alias] && o.depth <= this.options.depth),
             );
           }
         }
       } catch (e) {
         this.error(e);
-        this.error("Failed to resolve one or more functions");
+        this.error('Failed to resolve one or more functions');
       }
     }
 
@@ -78,7 +73,7 @@ export default class Parser extends Project {
     const { code, ast } = this.getAbstractSyntaxTree(func.path);
 
     const newReferences = [];
-    let type = func.type || "functions";
+    let type = func.type || 'functions';
 
     const handleResult = (
       path,
@@ -105,7 +100,7 @@ export default class Parser extends Project {
 
           this.methods[container.alias] ??= new EntityData({
             ...container,
-            type: "classes",
+            type: 'classes',
           });
           this.methods[container.alias].contains.add(func.alias);
         }
@@ -113,7 +108,11 @@ export default class Parser extends Project {
     };
 
     const getNodeCode = (node: Node, type: string, name: string) => {
-      if (type === "Identifier" && name === func.name) {
+      if (!type || !name) {
+        return '';
+      }
+
+      if (type === 'Identifier' && name === func.name) {
         return `${this.extractComments(node)}${generate(node).code}`;
       }
       return ``;
@@ -123,31 +122,31 @@ export default class Parser extends Project {
       ClassMethod: (path) => {
         handleResult(
           path,
-          getNodeCode(path.node, path.node.key.type, path.node.key["name"]),
+          getNodeCode(path.node, path.node.key?.type, path.node.key?.['name']),
           true,
         );
       },
       FunctionDeclaration: (path) => {
         handleResult(
           path,
-          getNodeCode(path.node, path.node.id.type, path.node.id["name"]),
+          getNodeCode(path.node, path.node.id?.type, path.node.id?.['name']),
         );
       },
       FunctionExpression: (path) => {
         handleResult(
           path,
-          getNodeCode(path.node, path.node.id.type, path.node.id["name"]),
+          getNodeCode(path.node, path.node.id?.type, path.node.id?.['name']),
         );
       },
       ArrowFunctionExpression: (path) => {
-        let contents = "";
+        let contents = '';
 
         if (
-          path.parent.type === "VariableDeclarator" &&
-          path.parentPath.parent.type === "VariableDeclaration"
+          path.parent.type === 'VariableDeclarator' &&
+          path.parentPath.parent.type === 'VariableDeclaration'
         ) {
           if (
-            path.parent.id.type === "Identifier" &&
+            path.parent.id.type === 'Identifier' &&
             path.parent.id.name === func.name
           ) {
             const declarationNode = path.parentPath.parent;
@@ -165,44 +164,19 @@ export default class Parser extends Project {
       TSTypeAliasDeclaration: (path) => {
         if (path.node.id.name === func.name) {
           handleResult(path, generate(path.node).code);
-          type = "types";
+          type = 'types';
         }
       },
       TSInterfaceDeclaration: (path) => {
         if (path.node.id.name === func.name) {
-          console.log("Found a interface", func.name);
+          console.log('Found a interface', func.name);
           handleResult(path, generate(path.node).code);
-          type = "types";
+          type = 'types';
         }
       },
     });
 
     return newReferences;
-  }
-
-  extractArrowFunctionExpression(
-    path: NodePath<babel.types.ArrowFunctionExpression>,
-    code: string,
-    name: string,
-  ) {
-    let contents = "";
-
-    if (
-      path.parent.type === "VariableDeclarator" &&
-      path.parentPath.parent.type === "VariableDeclaration"
-    ) {
-      if (
-        path.parent.id.type === "Identifier" &&
-        path.parent.id.name === name
-      ) {
-        const declarationNode = path.parentPath.parent;
-        contents = code.substring(declarationNode.start!, declarationNode.end!);
-
-        contents = this.extractComments(declarationNode) + contents;
-      }
-    }
-
-    return contents;
   }
 
   findContainer(path: NodePath, func: EntityData): EntityData {
@@ -212,9 +186,9 @@ export default class Parser extends Project {
     if (parent) {
       const node = parent.node;
       const name =
-        node.type === "ClassDeclaration"
+        node.type === 'ClassDeclaration'
           ? node.id.name
-          : node["id"]?.name || "anonymous";
+          : node['id']?.name || 'anonymous';
 
       return {
         path: func.path,
@@ -226,9 +200,9 @@ export default class Parser extends Project {
   }
 
   getPathImports(basePath: string) {
-    const code = fs.readFileSync(basePath, "utf-8");
+    const code = fs.readFileSync(basePath, 'utf-8');
     const ast = parser.parse(code, {
-      sourceType: "module",
+      sourceType: 'module',
       plugins: this.parserPlugins,
     });
 
@@ -238,7 +212,7 @@ export default class Parser extends Project {
         const source = path.node.source.value;
         path.node.specifiers.forEach((specifier) => {
           if (
-            ["ImportSpecifier", "ImportDefaultSpecifier"].includes(
+            ['ImportSpecifier', 'ImportDefaultSpecifier'].includes(
               specifier.type,
             )
           ) {
@@ -251,7 +225,7 @@ export default class Parser extends Project {
               name,
               contents: `${this.extractComments(specifier)}${fullImportString}`,
               alias: aliasName(name, pathname),
-              type: "imports",
+              type: 'imports',
             });
           }
         });
@@ -270,7 +244,7 @@ export default class Parser extends Project {
 
     path.traverse({
       TSTypeReference: (callPath: NodePath<babel.types.TSTypeReference>) => {
-        if (callPath.node.typeName.type === "Identifier") {
+        if (callPath.node.typeName.type === 'Identifier') {
           const objectName = generate(callPath.node).code;
           const importPath = findImport(objectName);
           const path = importPath || func.path;
@@ -279,30 +253,32 @@ export default class Parser extends Project {
             path,
             name: callPath.node.typeName.name,
             alias: aliasName(callPath.node.typeName.name, path),
-            type: "types",
+            type: 'types',
           });
         }
       },
       CallExpression: (callPath) => {
         const callee = callPath.node.callee;
-        if (callee.type === "MemberExpression") {
+        if (callee.type === 'MemberExpression') {
           const objectName = generate(callee.object).code;
           const propertyName = generate(callee.property).code;
           const importPath = findImport(objectName);
           const path = importPath || func.path;
+
           referTo.push({
             path,
             name: `${propertyName}`,
             alias: aliasName(propertyName, path),
-            type: "functions",
+            type: 'functions',
           });
-        } else if (callee.type === "Identifier") {
+        } else if (callee.type === 'Identifier') {
           const path = findImport(callee.name) || func.path;
+
           referTo.push({
             path,
             name: callee.name,
             alias: aliasName(callee.name, path),
-            type: "functions",
+            type: 'functions',
           });
         }
       },
@@ -314,7 +290,7 @@ export default class Parser extends Project {
   getContainerContents() {
     const containers = Object.keys(this.methods)
       .map((o) => this.methods[o])
-      .filter((o) => o.type === "classes");
+      .filter((o) => o.type === 'classes');
 
     for (const container of containers) {
       const { ast } = this.getAbstractSyntaxTree(container.path);
@@ -328,7 +304,7 @@ export default class Parser extends Project {
         VariableDeclaration: (path) => {
           // I think this is for react code i.e const x = () => {}
           const declaration = path.node.declarations[0];
-          if (declaration.id["name"] === container.name) {
+          if (declaration.id['name'] === container.name) {
             container.contents = generate(path.node).code;
           }
         },

@@ -2,7 +2,6 @@ import { EntityData } from "./parser/entity.class";
 import { RequiredOptions } from "prettier";
 
 export type ParserOptions = {
-  type: 'typescript' | 'javascript';
   aliasConfig?: Record<string, string>;
   root?: string;
   isDebug?: boolean;

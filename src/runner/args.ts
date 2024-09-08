@@ -6,7 +6,7 @@ type Args = {
   pathname: string;
   functionName: string;
   args: ParserOptions;
-}
+};
 
 export const extractArgs = (): Args => {
   const [, , basePath, filePath, functionName] = process.argv;
@@ -23,7 +23,14 @@ export const extractArgs = (): Args => {
     process.exit(1);
   }
 
-  const config = JSON.parse(fs.readFileSync(path.join(basePath, 'grab.json'), 'utf-8') ?? '{}'); // Read file contents
+  let config: any = {};
+  try {
+    config = JSON.parse(
+      fs.readFileSync(path.join(basePath, "grab.json"), "utf-8") ?? "{}",
+    ); // Read file contents
+  } catch (e) {}
+
+  config ??= {};
 
   return {
     pathname,

@@ -8,10 +8,18 @@ import babel from "@babel/core";
 import prettier from "prettier";
 import { Node } from "@babel/traverse";
 import { copyToClipboard } from "../os/clipboard";
+import { findAliases } from "../parser/alias.search";
+import { createImportSection } from "../parser/imports.map";
+
+/*
+// get referrers in tsx
+// get page path with filename
+// plugin stuff
+ */
 
 export class Project {
   options: ParserOptions;
-  parserPlugins: ParserPlugin[] = ["decorators"];
+  parserPlugins: ParserPlugin[] = ["decorators", "jsx", "typescript"];
 
   error(...args) {
     console.log(...args);
@@ -36,9 +44,19 @@ export class Project {
     };
   }
 
+  getAliasConfig() {
+    if (Object.keys(this.options.aliasConfig ?? {}).length) {
+      return this.options.aliasConfig;
+    }
+
+    this.options.aliasConfig = findAliases(this.options.root);
+    return this.options.aliasConfig;
+  }
+
   resolveImportPath(relativePath: string, currentFilePath: string): string {
-    const { aliasConfig, root, type } = this.options;
-    const isTs = type === "typescript";
+    const { root } = this.options;
+    const aliasConfig = this.getAliasConfig();
+    const isTs = currentFilePath.includes(".ts");
     // Check if it's an alias path
     const aliasMatch = Object.keys(aliasConfig).find((alias) => {
       const start = relativePath.split("/")[0];
@@ -109,13 +127,24 @@ export class Project {
     const importList = data.filter((o) => o.type === "imports");
     const typeList = data.filter((o) => o.type === "types");
 
-    const entry: string[] = [];
+    let entry: string[] = [];
 
     const appendImports = () => {
-      // add import list
-      if (this.options.includeImports) {
-        entry.push(`${importList.map((o) => o.contents).join("\n")}\n\n`);
+      if (!this.options.includeImports) {
+        return;
       }
+
+      // Construct list
+      let list = createImportSection(importList);
+
+      // ensure we dont import things that are implemented in the file
+      list = list.filter((o) => {
+        const implemented = data.find(
+          (d) => o.includes(d.name) && d.type !== "imports",
+        );
+        return !implemented;
+      });
+      entry.push(`${list.join("\n")}\n\n`);
     };
 
     const appendClasses = () => {
@@ -156,8 +185,9 @@ export class Project {
             entry.push(
               `${
                 lastFileName === "" ? "" : "//======================"
-              }\n\n\n//${func.fileName}\n`,
+              }\n\n\n/${func.path.replace(this.options.root, "")}\n`,
             );
+
             lastFileName = func.fileName;
             spacing = "";
           }
@@ -182,28 +212,35 @@ export class Project {
       }
     }
 
+    const isTs = entry.find((o) => o.includes(".ts"));
+    const isJsx = entry.find((o) => o.includes(".tsx") || o.includes(".jsx"));
     const filePath = `${this.options.root}/grab.${
-      this.options.type === "typescript" ? "ts" : "js"
+      (isTs ? "ts" : "js") + (isJsx ? "x" : "")
     }`;
     fs.writeFileSync(filePath, entry.join(""), { flag: "w" });
-    return this.applyPrettierToFile(filePath).then(() => {
-      const contents = fs.readFileSync(filePath, "utf-8"); // Read file contents after prettified
-      copyToClipboard(contents);
-      if (!this.options.file) {
-        fs.unlinkSync(filePath);
-      }
-    });
+    return this.applyPrettierToFile(filePath)
+      .catch((err) => {
+        this.error("Failed to prettify", err);
+      })
+      .finally(() => {
+        const contents = fs.readFileSync(filePath, "utf-8"); // Read file contents after prettified
+        copyToClipboard(contents);
+        if (!this.options.file) {
+          fs.unlinkSync(filePath);
+        }
+      });
   }
 
   async applyPrettierToFile(filePath: string): Promise<void> {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const formatted = await prettier.format(content, {
+    const { code } = this.getAbstractSyntaxTree(filePath);
+    const formatted = await prettier.format(code, {
       singleQuote: true,
       trailingComma: "all",
       endOfLine: "lf",
       ...this.options.prettier,
       filepath: filePath,
     });
+
     fs.writeFileSync(filePath, formatted);
   }
 }
