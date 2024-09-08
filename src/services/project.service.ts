@@ -192,7 +192,7 @@ export class Project {
       }
     }
 
-    const filePath = `./context-grab.${
+    const filePath = `./grab.${
       this.options.type === "typescript" ? "ts" : "js"
     }`;
     fs.writeFileSync(filePath, entry.join(""), { flag: "w" });

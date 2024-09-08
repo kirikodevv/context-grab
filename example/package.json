@@ -1,15 +1,15 @@
 {
-  "name": "@monosimple/backend",
+  "name": "@kirkodevv/backend",
   "version": "1.0.0",
   "description": "rest api built with nodejs by Jonah Elbaz",
   "main": "src/app.ts",
   "scripts": {
-    "cg": "yarn --cwd ./node_modules/@monosimple/context-grab run start $(pwd) ./src/app.ts testFunc --ts"
+    "cg": "yarn --cwd ./node_modules/@kirkodevv/context-grab run start $(pwd) ./src/app.ts testFunc --ts"
   },
   "author": "Jonah Elbaz",
   "license": "ISC",
   "dependencies": {
-    "@kirkodevv/context-grab": "file:../context-grab",
+    "@kirkodevv/context-grab": "file:../",
     "@sendgrid/mail": "^8.1.1",
     "@sentry/node": "^7.103.0",
     "@sentry/tracing": "^7.103.0",

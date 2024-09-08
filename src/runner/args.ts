@@ -23,7 +23,7 @@ export const extractArgs = (): Args => {
     process.exit(1);
   }
 
-  const config = JSON.parse(fs.readFileSync(path.join(basePath, 'context-grab.json'), 'utf-8') ?? '{}'); // Read file contents
+  const config = JSON.parse(fs.readFileSync(path.join(basePath, 'grab.json'), 'utf-8') ?? '{}'); // Read file contents
 
   return {
     pathname,

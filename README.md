@@ -66,3 +66,27 @@ function testFunc() {
 
 
 ```
+
+You may add a `grab.json` to your root to configure certain behaviours. Heres an example file
+
+```json
+{
+  "type": "typescript", // language (javascript | typescript)
+  "aliasConfig": {
+    "@utils": "./src/utils",
+    "@components": "./src/components"
+  }, // any alias configs
+  "includeImports": true, // Include imports 
+  "depth": 4, // how many files deep to get context from
+  "order": [
+    "imports",
+    "types",
+    "classes",
+    "functions"
+  ], // what order to append fields in
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  } // prettier rules for formatting
+}
+```
