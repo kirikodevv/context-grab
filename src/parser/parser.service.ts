@@ -169,7 +169,6 @@ export default class Parser extends Project {
       },
       TSInterfaceDeclaration: (path) => {
         if (path.node.id.name === func.name) {
-          console.log('Found a interface', func.name);
           handleResult(path, generate(path.node).code);
           type = 'types';
         }

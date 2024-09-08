@@ -1,6 +1,6 @@
 {
   "name": "@kirikodevv/context-grab",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "rest api built with nodejs by Jonah Elbaz",
   "repository": "https://github.com/kirikodevv/context-grab",
   "type": "commonjs",
