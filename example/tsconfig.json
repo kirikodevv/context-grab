@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "rootDir": "../", // Include both backend and shared directories
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "es2020",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "allowJs": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@libs/*": ["libs/*"],
+      "@athlete/shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "libs/**/*",
+    "../shared/src/**/*"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,6 @@
+{
+  "type": "typescript",
+  "aliasConfig": {
+    "@": "/src"
+  }
+}

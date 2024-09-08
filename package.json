@@ -1,5 +1,5 @@
 {
-  "name": "@monosimple/context-grab",
+  "name": "@kirkodevv/context-grab",
   "version": "1.0.0",
   "description": "rest api built with nodejs by Jonah Elbaz",
   "main": "src/index.ts",
