@@ -1,0 +1,25 @@
+# Node build artifacts
+node_modules
+npm-debug.log
+
+# Local development
+*.env
+*.dev
+.DS_Store
+
+# Environment
+.env.production
+package-lock.json
+
+# Raw Data
+data
+.idea
+test/assets
+data
+.npmrc
+lib
+
+.env.development
+.env.production
+test.json
+test.js
