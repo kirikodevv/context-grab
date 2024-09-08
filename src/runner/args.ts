@@ -12,7 +12,7 @@ export const extractArgs = (): Args => {
   const [, , basePath, filePath, functionName] = process.argv;
 
   if (!basePath || !functionName || !filePath) {
-    console.error("Usage: yarn cg <basePath> <filePath> <functionName>");
+    console.error("Usage: yarn start <basePath> <filePath> <functionName>");
     process.exit(1);
   }
 
