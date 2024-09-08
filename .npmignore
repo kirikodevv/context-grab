@@ -3,3 +3,5 @@ example/*
 local-example/*
 tsconfig.json
 .idea/*
+screenshot.png
+demo.mov
