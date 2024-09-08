@@ -1,15 +1,15 @@
 {
-  "name": "@kirkodevv/backend",
+  "name": "@kirikodevv/example",
   "version": "1.0.0",
   "description": "rest api built with nodejs by Jonah Elbaz",
   "main": "src/app.ts",
   "scripts": {
-    "cg": "yarn --cwd ./node_modules/@kirkodevv/context-grab run start $(pwd) ./src/app.ts testFunc --ts"
+    "cg": "yarn --cwd ./node_modules/@kirikodevv/context-grab run start $(pwd) ./src/app.ts testFunc --ts"
   },
   "author": "Jonah Elbaz",
   "license": "ISC",
   "dependencies": {
-    "@kirkodevv/context-grab": "file:../",
+    "@kirikodevv/context-grab": "1.0.5",
     "@sendgrid/mail": "^8.1.1",
     "@sentry/node": "^7.103.0",
     "@sentry/tracing": "^7.103.0",
@@ -50,6 +50,7 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@kirkodevv/context-grab": "kirikodevv/context-grab",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",

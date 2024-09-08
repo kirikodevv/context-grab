@@ -1,0 +1,5 @@
+src/*
+example/*
+local-example/*
+tsconfig.json
+.idea/*

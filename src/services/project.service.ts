@@ -14,19 +14,11 @@ export class Project {
   parserPlugins: ParserPlugin[] = ["decorators"];
 
   error(...args) {
-    if (!this.options.isSilent) {
-      console.log(...args);
-    }
+    console.log(...args);
   }
 
   debug(...args) {
     if (this.options.isDebug) {
-      console.log(...args);
-    }
-  }
-
-  info(...args) {
-    if (this.options.isInfo) {
       console.log(...args);
     }
   }
@@ -107,8 +99,6 @@ export class Project {
   }
 
   outputResults(results: OutputResults) {
-    this.info(results);
-
     const data = Object.keys(results)
       .map((o) => results[o])
       .filter((o) => !!o.contents)
@@ -192,14 +182,16 @@ export class Project {
       }
     }
 
-    const filePath = `./grab.${
+    const filePath = `${this.options.root}/grab.${
       this.options.type === "typescript" ? "ts" : "js"
     }`;
     fs.writeFileSync(filePath, entry.join(""), { flag: "w" });
     return this.applyPrettierToFile(filePath).then(() => {
       const contents = fs.readFileSync(filePath, "utf-8"); // Read file contents after prettified
       copyToClipboard(contents);
-      fs.unlinkSync(filePath);
+      if (!this.options.file) {
+        fs.unlinkSync(filePath);
+      }
     });
   }
 

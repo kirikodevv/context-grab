@@ -8,10 +8,9 @@ export const extensionOptions = {
 export const defaultOptions: ParserOptions = {
   type: 'typescript',
   isDebug: false,
-  isSilent: false,
-  isInfo: false,
   includeImports: true,
   order: ['imports', 'types', 'classes', 'functions'],
   prettier: {},
-  depth: 3
+  depth: 3,
+  file: true
 };

@@ -23,3 +23,7 @@ lib
 .env.production
 test.json
 test.js
+
+local-example
+dist
+grab.ts

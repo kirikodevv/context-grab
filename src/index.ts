@@ -4,10 +4,10 @@ import {extractArgs} from "./runner/args";
 /*
 TODO:
 
-1. Plugin
 2. Can search by functions, classes, types, decorators
 3. Experiment on more arbitrary things like files in root
 4. Class Scoped Variables
+5. Test: Controller in a nest or express project with max depth, can i get it all?
 
 
 - Does it work with JS/Docstrings

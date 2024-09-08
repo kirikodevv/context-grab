@@ -6,8 +6,6 @@ export type ParserOptions = {
   aliasConfig?: Record<string, string>;
   root?: string;
   isDebug?: boolean;
-  isSilent?: boolean;
-  isInfo?: boolean;
   includeImports?: boolean;
   order?: [EntryType, EntryType, EntryType, EntryType];
   file?: boolean;

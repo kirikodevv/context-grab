@@ -1,30 +1,32 @@
 {
-  "name": "@kirkodevv/context-grab",
-  "version": "1.0.0",
+  "name": "@kirikodevv/context-grab",
+  "version": "1.0.6",
   "description": "rest api built with nodejs by Jonah Elbaz",
-  "main": "src/index.ts",
+  "repository": "https://github.com/kirikodevv/context-grab",
   "type": "commonjs",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "build": "tsc -p tsconfig.json"
+    "start": "node dist/src/index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "publish": "npm run build & npm publish"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "author": "Jonah Elbaz",
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.25.2",
     "@babel/parser": "^7.25.6",
+    "clipboardy": "^4.0.0",
+    "prettier": "^3.3.3",
+    "underscore": "^1.13.6"
+  },
+  "devDependencies": {
+    "@kirkodevv/context-grab": "kirikodevv/context-grab",
     "@types/babel__core": "^7.20.5",
     "@types/babel__generator": "^7.6.8",
     "@types/babel__traverse": "^7.20.6",
-    "add": "^2.0.6",
-    "class-transformer": "^0.5.1",
-    "cli-progress": "^3.12.0",
-    "clipboardy": "^4.0.0",
-    "prettier": "^3.3.3",
-    "underscore": "^1.13.6",
-    "yarn": "^1.22.22"
-  },
-  "devDependencies": {
     "@types/cli-progress": "^3.11.5",
     "@types/lodash": "^4.17.0",
     "babel-core": "^7.0.0-bridge.0",
